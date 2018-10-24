@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<!---
+
+	Simple stand alone code editor for demos.
+
+	This edit page also supports loading of files automatically via URL parameters:
+	liveedit.html?src=myFileNameHere 
+
+	also you can change the title and description fields via the same way:
+	liveedit.html?src=sample.html&titleText=My%20Code&descText=My%20code%20description%20goes%20here
+	
+	Works offline if full repo has been cloned.  There are no server side dependancies or processing.
+
+	(c) M A Chatterjee <deftio> at <deftio> <dot> <com>
+	
+	see deftio.com/liveedit for more info
+	or
+	github.com/deftio/liveedit
+
+ -->
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- these libaries are for setting up the code editor and loading on this page nothing to do with the tgw.js lib            -->
+<script src="./libs/srcdoc-polyfill.js"></script>      <!-- for setting the iframe attributes and content                   -->
+<script src="./libs/bitwrench.js"></script>	        <!-- misc hacking support like reading cookies, URLs, number scaling -->
+<script src="./code_editor/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>  <!-- we're using the ace code editor : learn more here: https://ace.c9.io/   -->
+
+<style>
+body {
+	width: 80%;
+	margin: 5% auto;
+	margin-top:20px;
+	font-family : sans-serif;
+}
+
+button {
+	border-radius: 8px;
+	font-size: 13pt;
+}
+
+#editorContainer{
+	padding-top:0px;
+	height: 400px;
+	vertical-align: top;
+}
+
+#targetFrameContainer {
+	height: 800px;
+}
+/* editor control css */
+#editor { 
+	margin-top: 0px;
+	padding-top: 8px;
+    font-size: 11pt;
+    font-family: "Courier New", Courier;
+    height: 90%;
+    width : 100%;
+    border-radius: 8px;
+}
+/* end of code editor */
+
+/* this controls the size and other parameters of the iframe container where the code is run */
+.targetFrameCss {
+	width: 100%;
+	height: 100%;
+	border: 1px solid gray;
+	border-radius: 8px;
+	overflow-x: none;
+	overflow-y: none;
+}
+</style>
+
+<title>LiveEdit</title>
+</head>
+<body>
+<h2  id="titleId"></h2>      <!-- dynamically loaded title area   -->
+<div id="descId"> </div>     <!-- dynamically loaded content area -->
+<br>
+<div id="editorContainer">
+	<div id="editor"></div>  <!-- code editor text area           -->
+	<br>
+	<button id="btnSubmitCode"  	onclick="submitCode()">Run Code!</button>&nbsp;&nbsp;
+	<button id="btnCopyToClipBoard" onclick="bw.copyToClipboard(editor.getValue())">Copy Code to Clipboard</button>&nbsp;&nbsp;
+	<button id="btnSaveCodeToFile"  onclick="bw.saveClientFile('samplecode',bw.copyToClipboard(editor.getValue()))">Save Code To File</button>&nbsp;&nbsp;
+	<br>
+</div>
+<br id="mid">
+<div id="targetFrameContainer">
+	<iframe class="targetFrameCss" id="targetFrameId"></iframe> <!-- target frame to run code in -->
+</div>
+<script type="text/javascript">
+    if (bw.getURLParam("sideBySide","false") == "true") {
+    	document.getElementById("editorContainer").style.width= "49%";
+    	document.getElementById("targetFrameContainer").style.width = "49%";
+    	document.getElementById("editorContainer").style.height= "700px";
+    	document.getElementById("targetFrameContainer").style.height="700px";
+    	document.getElementById("editorContainer").style.display = "inline-block";
+    	document.getElementById("targetFrameContainer").style.display = "inline-block";
+    	document.getElementById("mid").remove();
+    }
+
+	var gSourceCode = ""; // default code example if sample file not found
+	gSourceCode = "\n<!doctype html>\n\<\!-- \nThis code is editable in your browser.\nJust write your code below and hit the RunCode button to see it run in the iframe below.\n--\>\n\n<html>\n<body>\n<p>Hello World</p>\n\n<div id='myID'></div>\n\n<script>\n\tdocument.getElementById('myID').innerHTML = new Date();\n<\/script>\n\n</body>\n</html>\n";
+
+	var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/mono_industrial"); // the "path" is set by where "ace.js" is
+    editor.getSession().setMode("ace/mode/html");
+    editor.setOption("tabSize", 4);
+    editor.$blockScrolling = Infinity;
+    editor.setValue(gSourceCode); // default source code load if can't load data from file
+    editor.clearSelection();
+    
+   	function submitCode() {
+		var s = editor.getValue();
+		srcDoc.set(document.getElementById("targetFrameId"),s);  // this loads the code from our editor in to the iframe.  The iframe is a complete stand-alone html page.
+	}
+
+	// =======================================
+	// load source file 
+	
+	var src = bw.getURLParam("src","./sample.html");  // default file is used if no src file is passed in as a URL parameter
+	bw.getFile(src, function(d){editor.setValue(d); editor.clearSelection(); submitCode();}); // load the file in to the editor
+
+	// set up title and description, also loadable via web params
+	document.getElementById("titleId").innerHTML = decodeURIComponent(bw.getURLParam("titleText","Live Edit Code Editor"));
+	document.getElementById("descId").innerHTML  = decodeURIComponent(bw.getURLParam("descText","Try out the code in the editor below and hit submit to see the result in the frame below."));
+</script>
+</body>
+</html>

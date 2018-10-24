@@ -1,0 +1,11 @@
+{
+  "name": "liveedit",
+  "version": "1.0.0",
+  "description": "A quick repo for deploying a stand alone code editor for javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "manu chatterjee <deftio@deftio.com> (http://deftio.com)",
+  "license": "BSD-2-Clause"
+}

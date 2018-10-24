@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="icon" type="image/x-icon" href="./images/spannit.ico" />
+
+<title>LiveEdit</title>
+<!-- 
+	LiveEdit intro page
+	(c) M A Chatterjee 2012-2018 	deftio<at>deftio<dot>com
+	github:  https:github.com/deftio/liveedit
+	web:     https:deftio.com/liveedit
+ -->
+
+<script type="text/javascript" src="./libs/bitwrench.js" ></script> <!-- html page formatting & related -->
+
+</head>
+<body class="bw-def-page-setup bw-font-sans-serif">
+<div  class="bw-container">
+	<div class="bw-col-12">
+		<br>
+		<h1>Welcome to LiveEdit.html</h1>
+
+		<br>
+		LiveEdit is a simple example of a standalone html/javascript/css text editor web app that can be used for testing ideas or prototyping.  <br><br>
+		LiveEdit presents a simple text editor with syntax highlighting which can be edited live in the page.  Then the HTML/Javascript/CSS code can be run by pressing the [Run Code!] button.  At this point the code in the editor is loaded in to the frame on the same page and run.  This can be repeated as many times as necessary.
+		<br>
+		<h2>Features</h2>
+		&#8226; Syntax highlighting supported code editor based on the excellent ACE code editor.<br> 
+		&#8226; Live runnning of code in a separate frame<br>
+		&#8226; Load test files on the fly via URL such as this:  liveedit.html&src=myFileGoesHere<br>
+		&#8226; no server side report required<br>
+		&#8226; no CDN or web dependancies required so can run standalone via filesystem<br>
+		
+		<a href="./liveedit.html" target="_blank"><h3>Live Example</h3><div style="background-image:url(LiveEdit.png);  background-repeat: no-repeat;
+    background-size: contain; background-position: center center: width:500px; height:500px; border: 2px solid grey; border-radius:8px;"></div></a>
+
+		<br><br><br>
+		<div class="bw-center" style="font-size: 9pt; font-weight: 600">LiveEdit.html&nbsp;&nbsp;&copy&nbsp;2017-<span id="cdate"></span>&nbsp; M A Chatterjee</div><br>	
+	</div>
+</div>
+<script type="text/javascript">
+	bw.DOMGetElements("#cdate")[0].innerHTML = (new Date()).getFullYear();
+	
+</script>
+
+</body>
+</html>
