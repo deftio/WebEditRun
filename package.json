@@ -1,8 +1,8 @@
 {
-  "name": "liveedit",
-  "version": "1.0.0",
+  "name": "webeditrun",
+  "version": "1.0.1",
   "description": "A quick repo for deploying a stand alone code editor for javascript",
-  "main": "index.js",
+  "main": "WebEditRun.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

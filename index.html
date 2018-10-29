@@ -4,9 +4,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <link rel="icon" type="image/x-icon" href="./images/spannit.ico" />
 
-<title>LiveEdit</title>
+<title>WebEditRun</title>
 <!-- 
-	LiveEdit intro page
+	WebEditRun intro page
 	(c) M A Chatterjee 2012-2018 	deftio<at>deftio<dot>com
 	github:  https:github.com/deftio/liveedit
 	web:     https:deftio.com/liveedit
@@ -19,29 +19,28 @@
 <div  class="bw-container">
 	<div class="bw-col-12">
 		<br>
-		<h1>Welcome to LiveEdit.html</h1>
+		<h1>Welcome to WebEditRun - a standalone web page app editor</h1>
 
 		<br>
-		LiveEdit is a simple example of a standalone html/javascript/css text editor web app that can be used for testing ideas or prototyping.  <br><br>
-		LiveEdit presents a simple text editor with syntax highlighting which can be edited live in the page.  Then the HTML/Javascript/CSS code can be run by pressing the [Run Code!] button.  At this point the code in the editor is loaded in to the frame on the same page and run.  This can be repeated as many times as necessary.
+		WebEditRun is a simple example of a standalone html/javascript/css text editor web app that can be used for testing ideas or prototyping.<br><br>
+		WebEditRun presents a simple text editor with syntax highlighting which can be edited live in the page.  Then the HTML/Javascript/CSS code can be run by pressing the [Run Code!] button.  At this point the code in the editor is loaded in to the frame on the same page and run.  This can be repeated as many times as necessary.
 		<br>
 		<h2>Features</h2>
-		&#8226; Syntax highlighting supported code editor based on the excellent ACE code editor.<br> 
-		&#8226; Live runnning of code in a separate frame<br>
-		&#8226; Load test files on the fly via URL such as this:  liveedit.html&src=myFileGoesHere<br>
-		&#8226; no server side report required<br>
-		&#8226; no CDN or web dependancies required so can run standalone via filesystem<br>
-		
-		<a href="./liveedit.html" target="_blank"><h3>Live Example</h3><div style="background-image:url(LiveEdit.png);  background-repeat: no-repeat;
-    background-size: contain; background-position: center center: width:500px; height:500px; border: 2px solid grey; border-radius:8px;"></div></a>
+		<ul>
+			<li>Syntax highlighting supported code editor based on the excellent <a href="https://github.com/ajaxorg/ace">ACE code editor</a></li>
+			<li>Live runnning of code in a separate frame</li>
+			<li>Load test files on the fly via URL such as this:  liveedit.html&src=myFileGoesHere</li>
+			<li>no server side report required</li>
+			<li>no CDN or web dependancies required so can run standalone via filesystem</li>
+		</ul>
+		<a href="./WebEditRun.html" target="_blank"><h3>Live Example</h3><div class="bw-col-8;" style="padding: 10px; height:500px; border: 1px solid grey; border-radius:8px;"> <div style="background-image:url(WebEditRun.png);  background-repeat: no-repeat; width: 100%; height:100%;  background-size: contain; background-position: center center: "></div></div></a>
 
 		<br><br><br>
-		<div class="bw-center" style="font-size: 9pt; font-weight: 600">LiveEdit.html&nbsp;&nbsp;&copy&nbsp;2017-<span id="cdate"></span>&nbsp; M A Chatterjee</div><br>	
+		<div class="bw-center" style="font-size: 9pt; ">WebEditRun.html&nbsp;&nbsp;&copy&nbsp;2017-<span id="cdate"></span>&nbsp; deftio llc</div><br>	
 	</div>
 </div>
 <script type="text/javascript">
 	bw.DOMGetElements("#cdate")[0].innerHTML = (new Date()).getFullYear();
-	
 </script>
 
 </body>
