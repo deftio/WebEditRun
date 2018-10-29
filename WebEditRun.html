@@ -9,14 +9,17 @@
 
 	also you can change the title and description fields via the same way:
 	WebEditRun.html?src=sample.html&titleText=My%20Code&descText=My%20code%20description%20goes%20here
+
+	Run side-by-side
+	WebEditRun.html?sidebyside=true
 	
 	Works offline if full repo has been cloned.  There are no server side dependancies or processing.
 
 	(c) M A Chatterjee <deftio> at <deftio> <dot> <com>
 	
-	see deftio.com/liveedit for more info
+	see deftio.com/webeditrun for more info
 	or
-	github.com/deftio/liveedit
+	github.com/deftio/webeditrun
 
  -->
 <head>
@@ -92,15 +95,14 @@ button {
 <div id="targetFrameContainer">
 	<iframe class="targetFrameCss" id="targetFrameId"></iframe> <!-- target frame to run code in -->
 </div>
-<br><br>
+<br><br>  
 <div class="bw-center" style="font-size: 9pt; ">WebEditRun.html&nbsp;&nbsp;&copy&nbsp;2017-<span id="cdate"></span>&nbsp; deftio llc</div><br>	
 <script type="text/javascript">
     if (bw.getURLParam("sidebyside","false") == "true") {
     	document.getElementById("editorContainer").style.width= "49%";
     	document.getElementById("targetFrameContainer").style.width = "49%";
     	document.getElementById("editorContainer").style.height= "700px";
-    	document.getElementById("targetFrameContainer").style.height="700px";
-    	document.getElementById("editorContainer").style.display = "inline-block";
+     	document.getElementById("editorContainer").style.display = "inline-block";
     	document.getElementById("targetFrameContainer").style.display = "inline-block";
     	document.getElementById("mid").remove();
     }
