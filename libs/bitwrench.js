@@ -593,7 +593,7 @@ x = bw.getURLParam("bar","whatever") ==> returns "whatever" since bar isn't set
 };
 
 // crude performance measurements
-var gUJTime = 0; //global closure for time.  'cause we always want a gbw gbw time :)
+var gBWTime = (new Date()).getTime(); //global closure for time.  'cause we always want a gbw gbw time :)
  
 // ===================================================================================
 bw.clearTimer = function (message) {
@@ -601,10 +601,10 @@ bw.clearTimer = function (message) {
 bw.clearTimer("message")
 When bitwrench loads its starts a page timer which can be checked for how long the page as been running (see bw.readTimer()).  bw.clearTimer() clears the timer with optional message.
  */
-    gUJTime = (new Date()).getTime();
-    if (bw.typeOf(message) == "string")
-       bw.logd(message);
-    return gUJTime;
+    gBWTime = (new Date()).getTime();
+    if (_to(message) != "undefined")
+       bw.logd(String(message));
+    return gBWTime;
 };
  
 // ===================================================================================
@@ -612,12 +612,11 @@ bw.readTimer = function (message) {
 /** 
 bw.readTimer("message")
 When bitwrench loads its starts a page timer which can be checked for how long the page as been running.
-
  */
     var ct = (new Date()).getTime();
-    if (bw.typeOf(message) == "string")
-        bw.logd(message);
-    return ct-gUJTime.getTime(); 
+    if (_to(message) != "undefined")
+       bw.logd(String(message));
+    return ct-gBWTime; 
 };
 bw.clearTimer(); //when bw is loaded, we start the timer.
 
@@ -1959,8 +1958,8 @@ write a quick grid style sheet for quick n dirty layout.  See docs for examples.
 
     //responsive screen
     s+= "@media only screen and (min-width: 540px) {  .bw-container {    width: 94%;  }}\n";
-    s+= "@media only screen and (min-width: 720px) {  .bw-container {    width: 86%;  }}\n";
-    s+= "@media only screen and (min-width: 960px) {  .bw-container {    width: 80%;  }}\n";
+    s+= "@media only screen and (min-width: 720px) {  .bw-container {    width: 90%;  }}\n";
+    s+= "@media only screen and (min-width: 960px) {  .bw-container {    width: 86%;  }}\n";
     s+= "\n";
     
     if (bw.isNodeJS() == false) {
@@ -2150,7 +2149,7 @@ bitwrench runtime version & license info.
 debateable how useful this is.. :)
  */
     var v = {
-        "version"   : "1.1.34", 
+        "version"   : "1.1.35", 
         "about"     : "bitwrench is a simple library of miscellaneous Javascript helper functions for common web design tasks.", 
         "copy"      : "(c) M A Chatterjee deftio (at) deftio (dot) com",    
         "url"       : "http://github.com/deftio/bitwrench",
