@@ -32,16 +32,10 @@
 <script src="./code_editor/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>  <!-- we're using the ace code editor : learn more here: https://ace.c9.io/   -->
 
 <style>
-body {
-	width: 80%;
-	margin: 5% auto;
-	margin-top:20px;
-	font-family : sans-serif;
-}
 
 button {
-	border-radius: 8px;
-	font-size: 13pt;
+	border-radius: 4px;
+	font-size: 12pt;
 }
 
 #editorContainer{
@@ -61,17 +55,17 @@ button {
     font-size: 11pt;
     font-family: "Courier New", Courier;
     height: 90%;
-    width : 100%;
-    border-radius: 8px;
+    /*width : 100%; */
+    border-radius: 5px;
 }
 /* end of code editor */
 
 /* this controls the size and other parameters of the iframe container where the code is run */
 .targetFrameCss {
-	width: 100%;
+	/* width: 100%; */
 	height: 100%;
 	border: 1px solid gray;
-	border-radius: 8px;
+	border-radius: 5px;
 	overflow-x: none;
 	overflow-y: none;
 }
@@ -79,45 +73,83 @@ button {
 
 <title>WebEditRun</title>
 </head>
-<body>
+<body class="bw-def-page-setup bw-font-sans-serif">
 <h2  id="titleId"></h2>      <!-- dynamically loaded title area   -->
 <div id="descId"> </div>     <!-- dynamically loaded content area -->
 <br>
-<div id="editorContainer">
-	<div id="editor"></div>  <!-- code editor text area           -->
-	<br>
-	<button id="btnSubmitCode"  	onclick="submitCode()">Run Code!</button>&nbsp;&nbsp;
-	<button id="btnCopyToClipBoard" onclick="bw.copyToClipboard(editor.getValue())">Copy Code to Clipboard</button>&nbsp;&nbsp;
-	<button id="btnSaveCodeToFile"  onclick="bw.saveClientFile('samplecode',bw.copyToClipboard(editor.getValue()))">Save Code To File</button>&nbsp;&nbsp;
-	<br>
-</div>
-<br id="mid">
-<div id="targetFrameContainer">
-	<iframe class="targetFrameCss" id="targetFrameId"></iframe> <!-- target frame to run code in -->
+<div class="bw-container bw-col-12">
+
+	<div id="editorContainer" class="bw-col-6">
+		<div id="x" class="a b d"></div>
+		<div id="editor"></div>  <!-- code editor text area           -->
+		<br>
+		<button id="btnSubmitCode"  	onclick="submitCode()">Run Code!</button>&nbsp;&nbsp;
+		<button id="btnCopyToClipBoard" onclick="bw.copyToClipboard(editor.getValue())">Copy Code to Clipboard</button>&nbsp;&nbsp;
+		<button id="btnSaveCodeToFile"  onclick="bw.saveClientFile('samplecode',bw.copyToClipboard(editor.getValue()))">Save To File</button>&nbsp;&nbsp;
+		<button id="btnLiveEdit"        onclick="">Live Edit Mode</button>&nbsp;&nbsp;
+		<button id="sidebyside"			onclick="">Toggle Layout</button>
+		<br>
+	</div>
+	<br id="mid">
+	<div id="targetFrameContainer" class="bw-col-6">
+		<iframe class="targetFrameCss" id="targetFrameId"></iframe> <!-- target frame to run code in -->
+	</div>
 </div>
 <br><br>  
 <div class="bw-center" style="font-size: 9pt; ">WebEditRun.html&nbsp;&nbsp;&copy&nbsp;2017-<span id="cdate"></span>&nbsp; deftio llc</div><br>	
 <script type="text/javascript">
     if (bw.getURLParam("sidebyside","false") == "true") {
-    	document.getElementById("editorContainer").style.width= "49%";
-    	document.getElementById("targetFrameContainer").style.width = "49%";
+    	//document.getElementById("editorContainer").style.width= "49%";
     	document.getElementById("editorContainer").style.height= "700px";
      	document.getElementById("editorContainer").style.display = "inline-block";
+
+    	//document.getElementById("targetFrameContainer").style.width = "49%";
     	document.getElementById("targetFrameContainer").style.display = "inline-block";
     	document.getElementById("mid").remove();
     }
 
+    var setEditMode = function(x) {
+    	if (x==true)
+    		editor.getSession().on('change',function(){submitCode();})	
+    	else
+    		editor.getSession().on('change',function(){})
+    	return x;
+    } 
+
+    var toggleEdit = function (x) {
+
+    }
 	var gSourceCode = ""; // default code example if sample file not found
 	gSourceCode = "\n<!doctype html>\n\<\!-- \nThis code is editable in your browser.\nJust write your code below and hit the RunCode button to see it run in the iframe below.\n--\>\n\n<html>\n<body>\n<p>Hello World</p>\n\n<div id='myID'></div>\n\n<script>\n\tdocument.getElementById('myID').innerHTML = new Date();\n<\/script>\n\n</body>\n</html>\n";
 
+	var editorParams = function(newParams) {
+		var i, defParams, params = {
+			theme 	: "ace/theme/mono_industrial",
+			mode  	: "ace/mode/html",
+			tabSize : 4,
+			"$blockScrolling" : Infinity,
+			value : "",
+		}
+		for (i in defParams)
+			params[i]=defParams[i];
+
+		for (i in newParams)
+			params[i] = newParams[i];
+
+		return params;
+	}
+
+
 	var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/mono_industrial"); // the "path" is set by where "ace.js" is
-    editor.getSession().setMode("ace/mode/html");
-    editor.setOption("tabSize", 4);
-    editor.$blockScrolling = Infinity;
-    editor.setValue(gSourceCode); // default source code load if can't load data from file
-    editor.clearSelection();
-    
+	var initEditor = function(editorInstance) {
+		editorInstance.setTheme("ace/theme/mono_industrial"); // the "path" is set by where "ace.js" is
+		editorInstance.getSession().setMode("ace/mode/html");
+		editorInstance.setOption("tabSize", 4);
+		editorInstance.$blockScrolling = Infinity;
+		editorInstance.setValue(gSourceCode); // default source code load if can't load data from file
+		editorInstance.clearSelection();
+    }
+    initEditor(editor);
     //submit button logic
    	function submitCode() {
 		var s = editor.getValue();
@@ -130,9 +162,9 @@ button {
 	bw.getFile(src, function(d){editor.setValue(d); editor.clearSelection(); submitCode();}); // load the file in to the editor
 
 	// set up title and description, also loadable via web params
-	bw.DOMGetElements("titleId")[0].innerHTML = decodeURIComponent(bw.getURLParam("titleText","Live Edit Code Editor"));
-	bw.DOMGetElements("descId")[0].innerHTML  = decodeURIComponent(bw.getURLParam("descText","Try out the code in the editor below and hit submit to see the result in the frame below."));
-	bw.DOMGetElements("#cdate")[0].innerHTML = (new Date()).getFullYear();
+	bw.DOM("#titleId", decodeURIComponent(bw.getURLParam("titleText","Live Edit Code Editor")));
+	bw.DOM("#descId", decodeURIComponent(bw.getURLParam("descText","Try out the code in the editor below and hit submit to see the result in the frame below.")));
+	bw.DOM("#cdate", (new Date()).getFullYear());
 </script>
 </body>
 </html>

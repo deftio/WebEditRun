@@ -118,7 +118,7 @@ button {
 
     var setEditAutoMode = function(x) {
     	if (x==true)
-    		editor.getSession().on('change',function(){submitCode();})	
+    		editor.getSession().on('change',function(){submitCodeDispatch();})	
     	else
     		editor.getSession().on('change',function(){})
     	return x;
