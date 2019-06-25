@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<!---
+
+	Simple stand alone code editor for demos.
+
+	This edit page also supports loading of files automatically via URL parameters:
+	WebEditRun.html?src=myFileNameHere 
+
+	also you can change the title and description fields via the same way:
+	WebEditRun.html?src=sample.html&titleText=My%20Code&descText=My%20code%20description%20goes%20here
+
+	Run side-by-side
+	WebEditRun.html?sidebyside=true
+	
+	Works offline if full repo has been cloned.  There are no server side dependancies or processing.
+
+	(c) M A Chatterjee <deftio> at <deftio> <dot> <com>
+	
+	see deftio.com/webeditrun for more info
+	or
+	github.com/deftio/webeditrun
+
+ -->
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- these libaries are for setting up the code editor and loading on this page nothing to do with the tgw.js lib            -->
+<script src="./libs/srcdoc-polyfill.js"></script>      <!-- for setting the iframe attributes and content                   -->
+<script src="./libs/bitwrench.js"></script>	           <!-- misc hacking support like reading cookies, URLs, number scaling -->
+<script src="./libs/js-yaml.min.js"></script>	           <!-- misc hacking support like reading cookies, URLs, number scaling -->
+<script src="./code_editor/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>  <!-- we're using the ace code editor : learn more here: https://ace.c9.io/   -->
+
+<style>
+
+button {
+	border-radius: 4px;
+	font-size: 12pt;
+}
+
+#editorContainer{
+	padding-top:0px;
+	height: 600px;
+	vertical-align: top;
+	position: relative;
+	display:inline-block;
+}
+
+#targetFrameContainer {
+	height: 600px;
+	position: relative;
+	display:inline-block;
+}
+
+/* editor control css */
+#editor { 
+	margin-top: 0px;
+	padding-top: 8px;
+    font-size: 11pt;
+    font-family: "Courier New", Courier;
+    height: 90%;
+    width : 100%; 
+    border-radius: 5px;
+    position: relative; 
+    
+}    
+/* end of code editor */
+
+/* this controls the size and other parameters of the iframe container where the code is run */
+.targetFrameCss {
+	width: 100%; 
+	height: 100%;
+	border: 1px solid gray;
+	border-radius: 5px;
+	overflow-x: auto;
+	overflow-y: auto;
+	position: relative;
+}
+</style>
+
+<title>WebEditRun</title>
+</head>
+<body class="bw-def-page-setup bw-font-sans-serif">
+<br>
+<div class="bw-container ">
+	<h2  id="titleId"></h2>      <!-- dynamically loaded title area   -->
+	<div id="descId"> </div>     <!-- dynamically loaded content area -->
+	<br>
+	<div id="editorContainer" class="bw-col-6">
+		<div id="editor"></div>  <!-- code editor text area           -->
+		<br>
+		<button id="btnSubmitCode"  	onclick="submitCodeDispatch()">Run Code!</button>&nbsp;&nbsp;
+		<button id="btnCopyToClipBoard" onclick="bw.copyToClipboard(editor.getValue())">Copy Code</button>&nbsp;&nbsp;
+		<button id="btnSaveCodeToFile"  onclick="bw.saveClientFile('samplecode',bw.copyToClipboard(editor.getValue()))">Save To File</button>&nbsp;&nbsp;
+		<button id="btnLiveEdit"        onclick="">Live Edit Mode</button>&nbsp;&nbsp; <!-- toggle on/off live edit -->
+		<!-- <button id="sidebyside"			onclick="">Toggle Layout</button> -->
+		<br>
+	</div>
+	<!--<div id="mid" class="bw-col-1"> </div> -->
+	<div id="targetFrameContainer" class="bw-col-5">
+		<iframe class="targetFrameCss" id="targetFrameId"></iframe> <!-- target frame to run code in -->
+	</div>
+</div>
+<br><br>  
+<div class="bw-center" style="font-size: 9pt; ">WebEditRun.html&nbsp;&nbsp;&copy&nbsp;2017-<span id="cdate"></span>&nbsp; deftio llc</div><br>	
+
+<script type="text/javascript">
+    if (bw.getURLParam("sidebyside","false") == "true") {
+    	//document.getElementById("editorContainer").style.width= "49%";
+    	document.getElementById("editorContainer").style.height= "700px";
+     	document.getElementById("editorContainer").style.display = "inline-block";
+
+    	//document.getElementById("targetFrameContainer").style.width = "49%";
+    	document.getElementById("targetFrameContainer").style.display = "inline-block";
+    	document.getElementById("mid").remove();
+    }
+
+    var setEditAutoMode = function(x) {
+    	if (x==true)
+    		editor.getSession().on('change',function(){submitCode();})	
+    	else
+    		editor.getSession().on('change',function(){})
+    	return x;
+    } 
+
+  
+
+	var gSourceCode = ""; // default code example if sample file not found
+	gSourceCode = "\n<!doctype html>\n\<\!-- \nThis code is editable in your browser.\nJust write your code below and hit the RunCode button to see it run in the frame.\n--\>\n\n<html>\n<body>\n<p>Hello World</p>\n\n<div id='myID'></div>\n\n<script>\n\tdocument.getElementById('myID').innerHTML = new Date();\n<\/script>\n\n</body>\n</html>\n";
+
+	var editorParams = function(newParams) {
+		var i, defParams, params = {
+			theme 	: "ace/theme/mono_industrial",
+			mode  	: "ace/mode/html",
+			tabSize : 4,
+			"$blockScrolling" : Infinity,
+			value : "",
+		}
+		for (i in defParams)
+			params[i]=defParams[i];
+
+		for (i in newParams)
+			params[i] = newParams[i];
+
+		return params;
+	}
+
+
+	var editor = ace.edit("editor");
+	var initEditor = function(editorInstance) {
+		editorInstance.setTheme("ace/theme/mono_industrial"); // the "path" is set by where "ace.js" is
+		editorInstance.getSession().setMode("ace/mode/html");
+		editorInstance.setOption("tabSize", 4);
+		editorInstance.$blockScrolling = Infinity;
+		editorInstance.setValue(gSourceCode); // default source code load if can't load data from file
+		editorInstance.clearSelection();
+    }
+    initEditor(editor);
+    
+    //submit button logic
+   	function submitCode() {
+		var s = editor.getValue();
+		srcDoc.set(document.getElementById("targetFrameId"),s);  // this loads the code from our editor in to the iframe.  The iframe is a complete stand-alone html page.
+	}
+
+	//submit button logic but using JS-YAML && Bitwrench
+   	function submitCodeYAML() {
+		var s = editor.getValue();
+		s = jsyaml.load(s);// convert from YAML to object..
+		s = bw.html(s); // convert from object to page..
+		srcDoc.set(document.getElementById("targetFrameId"),s);  // this loads the code from our editor in to the iframe.  The iframe is a complete stand-alone html page.
+	}
+
+	function submitCodeDispatch() {
+		if (bw.getURLParam("YAML","none") == "YAML") 
+			submitCodeYAML();
+		else
+			submitCode();
+	}
+
+	// =======================================
+	// load source file from URL
+	var src = bw.getURLParam("src","./sample.html");  // default file is used if no src file is passed in as a URL parameter
+	bw.getFile(src, function(d){editor.setValue(d); editor.clearSelection(); submitCode();}); // load the file in to the editor
+
+	// set up title and description, also loadable via web params
+	bw.DOM("#titleId", decodeURIComponent(bw.getURLParam("titleText","Live Edit Code Editor")));
+	bw.DOM("#descId", decodeURIComponent(bw.getURLParam("descText","Try out the code in the editor below and hit submit to see the result in the frame below.")));
+	bw.DOM("#cdate", (new Date()).getFullYear());
+
+	setEditAutoMode(bw.getURLParam("auto","false")=="true");
+</script>
+</body>
+</html>
