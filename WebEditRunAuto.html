@@ -166,8 +166,13 @@ button {
 
 	//submit button logic but using JS-YAML && Bitwrench
    	function submitCodeYAML() {
-		var s = editor.getValue();
-		s = jsyaml.load(s);// convert from YAML to object..
+		var s,r = editor.getValue();
+		try {
+			s = jsyaml.load(r);// convert from YAML to object..
+		}
+		catch(e) {
+			r;
+		}
 		s = bw.html(s); // convert from object to page..
 		srcDoc.set(document.getElementById("targetFrameId"),s);  // this loads the code from our editor in to the iframe.  The iframe is a complete stand-alone html page.
 	}
