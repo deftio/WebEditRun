@@ -12,10 +12,10 @@ See WebEditRun.html  (stand alone example page) to see in action
     
 ## Source code home
 all source is at github:
-http://github.com/deftio/webeditrun
+[Fork Me on Github!](http://github.com/deftio/webeditrun)
 
 Web url and examples
-http://deftio.com/webeditrun
+[Live Example](http://deftio.com/webeditrun)
 
 
 ## Release History

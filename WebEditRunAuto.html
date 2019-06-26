@@ -38,7 +38,9 @@ button {
 	border-radius: 4px;
 	font-size: 12pt;
 }
-
+.buttonDownX {
+   background-color:darkgrey;
+}
 #editorContainer{
 	padding-top:0px;
 	height: 600px;
@@ -93,7 +95,8 @@ button {
 		<button id="btnSubmitCode"  	onclick="submitCodeDispatch()">Run Code!</button>&nbsp;&nbsp;
 		<button id="btnCopyToClipBoard" onclick="bw.copyToClipboard(editor.getValue())">Copy Code</button>&nbsp;&nbsp;
 		<button id="btnSaveCodeToFile"  onclick="bw.saveClientFile('samplecode',bw.copyToClipboard(editor.getValue()))">Save To File</button>&nbsp;&nbsp;
-		<button id="btnLiveEdit"        onclick="">Live Edit Mode</button>&nbsp;&nbsp; <!-- toggle on/off live edit -->
+		<button id="btnLiveEdit"        onclick="setEditAutoMode(toggleClass(this,'buttonDownX'));">Live Edit Mode</button>&nbsp;&nbsp; <!-- toggle on/off live edit -->
+		<!-- <button type='button' onClick='onToggle(this)'>false</button> -->
 		<!-- <button id="sidebyside"			onclick="">Toggle Layout</button> -->
 		<br>
 	</div>
@@ -117,14 +120,32 @@ button {
     }
 
     var setEditAutoMode = function(x) {
+    	x = (x=="true") || (x==true) ? true : false;
+    	console.log(x);
     	if (x==true)
-    		editor.getSession().on('change',function(){submitCodeDispatch();})	
+    		editor.on('change',function(){submitCodeDispatch();})	
     	else
-    		editor.getSession().on('change',function(){})
+    		editor.on('change',function(){})
     	return x;
     } 
 
-  
+
+	function toggleClass(element, className){
+	    if (!element || !className){
+	        return false;
+	    }
+	    
+	    var classString = element.className;
+	    var nameIndex = 	classString.indexOf(className);
+	    if (nameIndex == -1) {
+	        classString += ' ' + className;
+	    }
+	    else {
+	        classString = classString.substr(0, nameIndex) + classString.substr(nameIndex+className.length);
+	    }
+	    element.className = classString;
+	    return nameIndex == -1;
+	}  
 
 	var gSourceCode = ""; // default code example if sample file not found
 	gSourceCode = "\n<!doctype html>\n\<\!-- \nThis code is editable in your browser.\nJust write your code below and hit the RunCode button to see it run in the frame.\n--\>\n\n<html>\n<body>\n<p>Hello World</p>\n\n<div id='myID'></div>\n\n<script>\n\tdocument.getElementById('myID').innerHTML = new Date();\n<\/script>\n\n</body>\n</html>\n";
@@ -159,31 +180,20 @@ button {
     initEditor(editor);
     
     //submit button logic
-   	function submitCode() {
+   	function submitCodeDispatch() {
 		var s = editor.getValue();
+		if (bw.getURLParam("YAML","none") == "YAML") {
+			try {
+				s = jsyaml.load(s);// convert from YAML to object..
+			}
+			catch(e) {
+				s=e.toString(); // show where we can't parse it...
+			}
+			s = bw.html(s); // convert from object to page..	
+		}
 		srcDoc.set(document.getElementById("targetFrameId"),s);  // this loads the code from our editor in to the iframe.  The iframe is a complete stand-alone html page.
 	}
-
-	//submit button logic but using JS-YAML && Bitwrench
-   	function submitCodeYAML() {
-		var s,r = editor.getValue();
-		try {
-			s = jsyaml.load(r);// convert from YAML to object..
-		}
-		catch(e) {
-			r;
-		}
-		s = bw.html(s); // convert from object to page..
-		srcDoc.set(document.getElementById("targetFrameId"),s);  // this loads the code from our editor in to the iframe.  The iframe is a complete stand-alone html page.
-	}
-
-	function submitCodeDispatch() {
-		if (bw.getURLParam("YAML","none") == "YAML") 
-			submitCodeYAML();
-		else
-			submitCode();
-	}
-
+	function submitCodeNothing() {}
 	// =======================================
 	// load source file from URL
 	var sampleFile = (bw.getURLParam("YAML","none") == "YAML") ? "./sample.yaml" : "./sample.html";
