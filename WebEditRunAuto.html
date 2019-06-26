@@ -109,6 +109,8 @@ button {
 <div class="bw-center" style="font-size: 9pt; ">WebEditRun.html&nbsp;&nbsp;&copy&nbsp;2017-<span id="cdate"></span>&nbsp; deftio llc</div><br>	
 
 <script type="text/javascript">
+	var gPageVars = {autoUpdate : false};
+
     if (bw.getURLParam("sidebyside","false") == "true") {
     	//document.getElementById("editorContainer").style.width= "49%";
     	document.getElementById("editorContainer").style.height= "700px";
@@ -121,11 +123,8 @@ button {
 
     var setEditAutoMode = function(x) {
     	x = (x=="true") || (x==true) ? true : false;
+    	gPageVars.autoUpdate = x;
     	console.log(x);
-    	if (x==true)
-    		editor.on('change',function(){submitCodeDispatch();})	
-    	else
-    		editor.on('change',function(){})
     	return x;
     } 
 
@@ -136,7 +135,7 @@ button {
 	    }
 	    
 	    var classString = element.className;
-	    var nameIndex = 	classString.indexOf(className);
+	    var nameIndex 	= classString.indexOf(className);
 	    if (nameIndex == -1) {
 	        classString += ' ' + className;
 	    }
@@ -147,8 +146,8 @@ button {
 	    return nameIndex == -1;
 	}  
 
-	var gSourceCode = ""; // default code example if sample file not found
-	gSourceCode = "\n<!doctype html>\n\<\!-- \nThis code is editable in your browser.\nJust write your code below and hit the RunCode button to see it run in the frame.\n--\>\n\n<html>\n<body>\n<p>Hello World</p>\n\n<div id='myID'></div>\n\n<script>\n\tdocument.getElementById('myID').innerHTML = new Date();\n<\/script>\n\n</body>\n</html>\n";
+	gPageVars["gSourceCode"] = ""; // default code example if sample file not found
+	gPageVars["gSourceCode"] = "\n<!doctype html>\n\<\!-- \nThis code is editable in your browser.\nJust write your code below and hit the RunCode button to see it run in the frame.\n--\>\n\n<html>\n<body>\n<p>Hello World</p>\n\n<div id='myID'></div>\n\n<script>\n\tdocument.getElementById('myID').innerHTML = new Date();\n<\/script>\n\n</body>\n</html>\n";
 
 	var editorParams = function(newParams) {
 		var i, defParams, params = {
@@ -174,14 +173,22 @@ button {
 		editorInstance.getSession().setMode("ace/mode/html");
 		editorInstance.setOption("tabSize", 4);
 		editorInstance.$blockScrolling = Infinity;
-		editorInstance.setValue(gSourceCode); // default source code load if can't load data from file
+		editorInstance.setValue(gPageVars["gSourceCode"]); // default source code load if can't load data from file
 		editorInstance.clearSelection();
+		editorInstance.getSession().on('change',function(){submitCode();})	
     }
     initEditor(editor);
     
+    //auto submit
+    function submitCode() {
+    	if (gPageVars.autoUpdate) {
+    		submitCodeDispatch();
+    	}
+    }
     //submit button logic
    	function submitCodeDispatch() {
 		var s = editor.getValue();
+
 		if (bw.getURLParam("YAML","none") == "YAML") {
 			try {
 				s = jsyaml.load(s);// convert from YAML to object..
@@ -193,7 +200,7 @@ button {
 		}
 		srcDoc.set(document.getElementById("targetFrameId"),s);  // this loads the code from our editor in to the iframe.  The iframe is a complete stand-alone html page.
 	}
-	function submitCodeNothing() {}
+	
 	// =======================================
 	// load source file from URL
 	var sampleFile = (bw.getURLParam("YAML","none") == "YAML") ? "./sample.yaml" : "./sample.html";
@@ -202,8 +209,8 @@ button {
 
 	// set up title and description, also loadable via web params
 	bw.DOM("#titleId", decodeURIComponent(bw.getURLParam("titleText","Live Edit Code Editor")));
-	bw.DOM("#descId", decodeURIComponent(bw.getURLParam("descText","Try out the code in the editor below and hit submit to see the result in the frame below.")));
-	bw.DOM("#cdate", (new Date()).getFullYear());
+	bw.DOM("#descId" , decodeURIComponent(bw.getURLParam("descText","Try out the code in the editor below and hit submit to see the result in the frame below.")));
+	bw.DOM("#cdate"  , (new Date()).getFullYear());
 
 	setEditAutoMode(bw.getURLParam("auto","false")=="true");
 </script>
