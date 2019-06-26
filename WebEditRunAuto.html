@@ -186,8 +186,9 @@ button {
 
 	// =======================================
 	// load source file from URL
-	var src = bw.getURLParam("src","./sample.html");  // default file is used if no src file is passed in as a URL parameter
-	bw.getFile(src, function(d){editor.setValue(d); editor.clearSelection(); submitCode();}); // load the file in to the editor
+	var sampleFile = (bw.getURLParam("YAML","none") == "YAML") ? "./sample.yaml" : "./sample.html";
+	var src = bw.getURLParam("src",sampleFile);  // default file is used if no src file is passed in as a URL parameter
+	bw.getFile(src, function(d){editor.setValue(d); editor.clearSelection(); submitCodeDispatch();}); // load the file in to the editor
 
 	// set up title and description, also loadable via web params
 	bw.DOM("#titleId", decodeURIComponent(bw.getURLParam("titleText","Live Edit Code Editor")));

@@ -1,0 +1,13 @@
+[html,"",[
+ [head,"", [
+    "<script src='./libs/bitwrench.js'></script>"
+ ]
+ ],
+ [body,{"class":"bw-def-page-setup bw-font-sans-serif"},[
+    [h2 , , My Live Page],
+    [p  ,{"style":"color:red"} ,"Page content starts here"],
+    [div, , more page content]
+    ]
+  ]
+ ]
+]
