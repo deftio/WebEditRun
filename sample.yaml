@@ -1,12 +1,16 @@
 [html,"",[
  [head,"", [
-    "<script src='./libs/bitwrench.js'></script>"
- ]
+    [script, {"src":"./libs/bitwrench.js"},""],
+    [style,"",".cpx{border: 1px solid blue}"]
+  ]
  ],
  [body,{"class":"bw-def-page-setup bw-font-sans-serif"},[
     [h2 , , My Live Page],
     [p  ,{"style":"color:red"} ,"Page content starts here"],
-    [div, , more page content]
+    [div, , more page content and more and more!!!], 
+    "<br>",
+    [p, , that is cool!],
+    [script,{},"bw.markElement(bw.DOM('p')[0],'cpx','cpx')"] # code elements
     ]
   ]
  ]
